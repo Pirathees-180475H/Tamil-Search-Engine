@@ -1,5 +1,7 @@
-export function paramProvider(queryTerm,queryTypes=[],fieldsArray=[]){
+export function paramProvider(queryTerm,queryTypes=[],fieldsArray=[],intervalQueryOrder,intervalQueryGap){
     let type;
+
+    let size=1000;
 
     //setQueryType
     if(queryTypes.length===0){
@@ -16,7 +18,8 @@ export function paramProvider(queryTerm,queryTypes=[],fieldsArray=[]){
                 "query_string": {
                     "query":queryTerm
                 }
-            }
+            },
+            "size":size
         }
     }
 
@@ -98,6 +101,40 @@ export function paramProvider(queryTerm,queryTypes=[],fieldsArray=[]){
             }
     }
 
+    //Interval Query
+    if(type==="Interval Query"){
+        console.log("Query Type - Interval Query")
+        //Only supports One field
+        
+        let queryTerms=queryTerm.split(" ");
+        queryTerms=queryTerms.filter(word => word !== "");
+
+        let intervals=queryTerms.map(function(term){
+            return {
+                "match":{
+                    "query":term
+                }
+            }
+        })
+        
+        return {
+            "query": {
+            "bool": {
+            "must": {
+            "intervals" : {
+            [fieldsArray[0]]: {
+            "all_of" : {
+            "ordered" : intervalQueryOrder,
+            "max_gaps": parseInt(intervalQueryGap),
+            "intervals" : intervals
+            }
+            }
+            }
+            }
+            }
+            }
+            }
+    }
 
 
 }

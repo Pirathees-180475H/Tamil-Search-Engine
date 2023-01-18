@@ -50,7 +50,7 @@ export default function HomePage() {
       <Container component="main" className={classes.main} maxWidth="sm">
         <Paper className={classes.paper}>
           <Typography variant="h4" className={classes.title}>
-            Welcome to Tamil Song Metaphor Search Engine!
+            Tamil Song Metaphor Search Engine!
           </Typography>
           <Typography variant="body1" className={classes.body}>
                  SEARCH

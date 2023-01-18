@@ -2,11 +2,11 @@ import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   Typography,
-  Radio,
-  RadioGroup,
   FormControlLabel,
-  FormControl,
   TextField,
+  FormControl,
+  Select,
+  MenuItem,
   Button,
   Table,
   TableBody,
@@ -16,9 +16,7 @@ import {
   Checkbox,
   Container,
   Menu,
-  MenuItem,
   ListItemText,
-  CloseIcon,
   IconButton
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
@@ -27,7 +25,7 @@ import {paramProvider} from "./ParamProvider";
 
 
 const checkboxLabels = ["song", "movie", "year", "musician", "lyricst",
- "singers","metopher","meaning","sourceDomain","targetDomain"];
+ "singers","metopher","meaning","sourcedomain","targetdomain"];
 
 
 const useStyles = makeStyles(theme => ({
@@ -40,14 +38,22 @@ const useStyles = makeStyles(theme => ({
       padding: theme.spacing(3)
     },
     menu1:{
-      position:"fixed",
+      position:"absolute",
       right:400,
-      top:100
+      top:100,
+      border:'1px solid black'
+    },
+    count:{
+      position:"absolute",
+      top:85,
+      right:50
     },
     menu2:{
-      position:"fixed",
+      position:"absolute",
       right:200,
-      top:100
+      top:100,
+      border:'1px solid black',
+
     },
     backButton: {
       position: "absolute",
@@ -111,16 +117,17 @@ const useStyles = makeStyles(theme => ({
         padding: theme.spacing(2),
         textAlign: "center",
         marginTop: theme.spacing(2),
+      },
+      interval:{
+        border:'1px solid black'
       }
   }));
 
 
 export default function SearchPage() {
   const classes = useStyles();
-  const [value, setValue] = useState("option1");
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState([]);
-  const [filteredResults,setFilteredResults]=useState([]);
 
   //Used in display results
   const [checkboxes, setCheckboxes] = useState([]);
@@ -128,7 +135,7 @@ export default function SearchPage() {
   // Menu & checkBox - Query Type
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedQueryTypes, setSelectedQueryTypes] = useState([]);
-  const queryTypes = ['Match','Match Phrase' ,'Multi Match Most Fields','Multi Match Phrase','Wild Card','Aggregation'];
+  const queryTypes = ['Match','Match Phrase' ,'Multi Match Most Fields','Multi Match Phrase','Wild Card','Interval Query'];
 
    // Menu & checkBox - Fields
    const [anchorE2, setAnchorE2] = useState(null);
@@ -139,17 +146,18 @@ export default function SearchPage() {
   const [showWarning, setShowWarning] = useState(false);
   const [showInfo, setShowinfo] = useState(true);
 
+  //Used in Intervel Query Related Componets
+  const[intervalQueryselected,setIntervalQueryselected]=useState(false);
+  const [intervalQueryOrder,setIntervalQueryOrder]=useState(true);
+  const [intervalQueryGap,setIntervalQueryGap]=useState("1");
 
-  const handleChange = event => {
-    setValue(event.target.value);
-  };
 
   //Request and Response Handler
   const handleSearch = async () => {
     setResults([]);  
     try {
      // const response = await axios.get(`your-endpoint/${searchTerm}`);
-      const param=paramProvider(searchTerm,selectedQueryTypes,selectedFields);
+      const param=paramProvider(searchTerm,selectedQueryTypes,selectedFields,intervalQueryOrder,intervalQueryGap);
       console.log(param)
       const response = await axios.post(`http://localhost:9200/tamilsonglyrics/_search`,param);
       setResults(response.data.hits.hits.map(hit=>hit._source))
@@ -157,9 +165,6 @@ export default function SearchPage() {
     } catch (error) {
       console.error(error);
     }
-
-    //Filter The data accordingto the checkBox
-    setFilteredResults([]);
 
     // Warning OR InfoData Showing
     if (results.length === 0) {
@@ -193,9 +198,16 @@ const handleMenuQueryClose = () => {
 const handleMenuCheckboxQueryChange = (field) => (event) => {
   if (event.target.checked && selectedQueryTypes.length===0) {
     setSelectedQueryTypes([...selectedQueryTypes, field]);
+     if(field==="Interval Query"){
+       setIntervalQueryselected(true)
+     }
   } else {
     setSelectedQueryTypes(selectedQueryTypes.filter((f) => f !== field));
+    if(field==="Interval Query"){
+      setIntervalQueryselected(false)
+    }
   }
+  //Show Interval quey Items
 };
 
  //Used in Menu and checkBoxes - For Field
@@ -215,6 +227,16 @@ const handleMenuFieldCheckboxChange = (field) => (event) => {
   }
 };
 
+//Used in Intervel Query Related Componets
+const handleTrueFalseChange = (event) => {
+  setIntervalQueryOrder(event.target.value);
+};
+
+const handleNumberChange = (event) => {
+  setIntervalQueryGap(event.target.value);
+};
+
+
   return (
     <div className={classes.root}>
       <Button
@@ -227,8 +249,9 @@ const handleMenuFieldCheckboxChange = (field) => (event) => {
         Back
       </Button>
 
-      <Typography variant="h5">தமிழ் பாடல் தேடல்</Typography>
-     
+      <Typography variant="h5">தமிழ் பாடல் உவமை தேடல் </Typography>
+      <Typography variant="h">------</Typography>
+
       <div > {/** Start of the checkbox Menu */}
           {/**Query Type */}
           <div className={classes.menu1}>
@@ -257,12 +280,6 @@ const handleMenuFieldCheckboxChange = (field) => (event) => {
                   <ListItemText primary={field} />
                 </MenuItem>
               ))}
-
-              <MenuItem>
-                <IconButton onClick={handleMenuQueryClose}>
-                  close
-                </IconButton>
-              </MenuItem>
             </Menu>
           </div>
 
@@ -275,7 +292,7 @@ const handleMenuFieldCheckboxChange = (field) => (event) => {
               onClick={handleMenuFieldClick}
               className={classes.button}
             >
-              Select Field
+              Select By.
             </Button>
             <Menu
               id="nested-menu"
@@ -294,16 +311,11 @@ const handleMenuFieldCheckboxChange = (field) => (event) => {
                   <ListItemText primary={field} />
                 </MenuItem>
               ))}
-
-              <MenuItem>
-                <IconButton onClick={handleMenuFieldClose}>
-                  close
-                </IconButton>
-              </MenuItem>
             </Menu>
           </div>
     </div>{/** End of the checkbox Menu */}
       
+      {/*Search Box*/}
       <TextField
         label="Search"
         variant="outlined"
@@ -317,6 +329,46 @@ const handleMenuFieldCheckboxChange = (field) => (event) => {
       >
         Search
       </Button>
+
+      {/*Interval query Items*/}
+      {intervalQueryselected &&
+      <div>
+      <div className={classes. interval}>
+            <FormControl className={classes.formControl}>
+              <Select
+                value={intervalQueryOrder}
+                onChange={handleTrueFalseChange}
+                displayEmpty
+              >
+                <MenuItem value="">Select</MenuItem>
+                <MenuItem value={true}>True</MenuItem>
+                <MenuItem value={false}>False</MenuItem>
+              </Select>
+            </FormControl>
+            <FormControl className={classes.formControl}>
+              <Select
+                value={intervalQueryGap}
+                onChange={handleNumberChange}
+                displayEmpty
+              >
+                <MenuItem value="">Select</MenuItem>
+                {[...Array(10)].map((e, i) => (
+                  <MenuItem key={i} value={i + 1}>
+                    {i + 1}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+        </div> }
+
+      {/*End of Interval query Items*/}
+
+      <div className={classes.count}>
+         <h4>Documents - {results.length}</h4>
+      </div>
+
+      {/**Table columns */}
 
       <div className={classes.checkboxes}>
         {checkboxLabels.map((label, index) => (
@@ -333,6 +385,7 @@ const handleMenuFieldCheckboxChange = (field) => (event) => {
         ))}
       </div>
 
+      {/**Table Data */}
 
       <Table className={classes.table}>
       <TableHead>
@@ -354,13 +407,13 @@ const handleMenuFieldCheckboxChange = (field) => (event) => {
      </Table>
   
 
-    {!showInfo && showWarning && (
+    {results.length===0 && !showInfo && (
       <Container className={classes.warning}>
         No results found. Please try a different search.
       </Container>
     )}
  
-    {showInfo && !showWarning && (
+    {showInfo && (
       <Container className={classes.info}>
       Search Songs
     </Container>
