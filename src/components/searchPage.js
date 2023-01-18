@@ -121,21 +121,19 @@ export default function SearchPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [results, setResults] = useState([]);
   const [filteredResults,setFilteredResults]=useState([]);
-  const [page, setPage] = useState(0);
 
   //Used in display results
   const [checkboxes, setCheckboxes] = useState([]);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   // Menu & checkBox - Query Type
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedQueryTypes, setSelectedQueryTypes] = useState([]);
-  const queryTypes = ['Match','Match Phrase' ,'Multi Match','Wild Card','Aggregation'];
+  const queryTypes = ['Match','Match Phrase' ,'Multi Match Most Fields','Multi Match Phrase','Wild Card','Aggregation'];
 
    // Menu & checkBox - Fields
    const [anchorE2, setAnchorE2] = useState(null);
    const [selectedFields, setSelectedFields] = useState([]);
-   const fields = ['Metopher', 'Meaning'];
+   const fields = ['metopher', 'meaning'];
 
   //warnig and information
   const [showWarning, setShowWarning] = useState(false);
@@ -147,11 +145,13 @@ export default function SearchPage() {
   };
 
   //Request and Response Handler
-  const handleSearch = async () => {    
+  const handleSearch = async () => {
+    setResults([]);  
     try {
      // const response = await axios.get(`your-endpoint/${searchTerm}`);
-      const param=paramProvider("all");
-      const response = await axios.get(`http://localhost:9200/tamilsonglyrics/_search`,{param});
+      const param=paramProvider(searchTerm,selectedQueryTypes,selectedFields);
+      console.log(param)
+      const response = await axios.post(`http://localhost:9200/tamilsonglyrics/_search`,param);
       setResults(response.data.hits.hits.map(hit=>hit._source))
       console.log(results)
     } catch (error) {
@@ -191,7 +191,7 @@ const handleMenuQueryClose = () => {
 };
 
 const handleMenuCheckboxQueryChange = (field) => (event) => {
-  if (event.target.checked) {
+  if (event.target.checked && selectedQueryTypes.length===0) {
     setSelectedQueryTypes([...selectedQueryTypes, field]);
   } else {
     setSelectedQueryTypes(selectedQueryTypes.filter((f) => f !== field));
