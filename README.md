@@ -1,4 +1,4 @@
-# Getting Started with Create React App
+# Tamil-Metophor Search Engine - IR Project
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
