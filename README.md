@@ -2,22 +2,36 @@
 
 This project was created using React and ElasticSearch
 
-## Steps to run the application
-### `1.Start the React application, Using npm install & npm start`
-
-### `2.Install Elastic search and do following steps `
+## `1.Install Elastic search and do following steps `
 1. Install Elastic search
 
-2. Create a folder called analyzers in /elasticsearch/config folder of local machine
+2. In the local machine's /elasticsearch/config folder, create a folder called analyzers.
 
-3. Copy the 3 .txt files that given under analyzer folder in this repo to local machines elasticsearch/config/analyzers
+3. Transfer the three.txt files (custom analyzers) from the analyzer folder in this repository to your own computer's elasticsearch/config/analyzers directory.
 
 4. Create an Index called "tamilsongs" in Elastic search using mapping.json file
 
-5. Start Elastic search
+7. Insert song.jon(corpus) to elastic search with help of Elastic search Bulk Document Insert.py file Or other methods
 
-6. Now you can able to run and execute the application
+8. Allow any origin to make request to elastic search server by configuring the elasticsearch.yaml
 
-## Structure of React application
+9. Start Elastic search
 
-R
+## Steps to run the react application
+
+1. Colone The Repo
+
+2. In React-app folder execute npm install 
+
+3. Now you can able to run the react application using npm start
+
+## Structure of the react application
+
+1. I used Axios as rest client(to communicate with elastic search)
+
+2. React-app/src/components contains Three .js files  
+    1. HomePage.JS -> Welcome Page of the application
+
+    2. searchPage-> contain UI components and search functionality handlers.
+
+    3. ParamProvider -> provides the request body for elastic search queries based on your input.

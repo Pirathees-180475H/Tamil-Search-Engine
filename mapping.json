@@ -1,0 +1,128 @@
+{
+    "tamilsongsnew": {
+        "aliases": {},
+        "mappings": {
+            "properties": {
+                "lyricist": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                        }
+                    }
+                },
+                "meaning": {
+                    "type": "text",
+                    "analyzer": "my_analyzer"
+                },
+                "metopher": {
+                    "type": "text",
+                    "analyzer": "my_analyzer"
+                },
+                "movie": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                        }
+                    }
+                },
+                "musician": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                        }
+                    }
+                },
+                "singers": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                        }
+                    }
+                },
+                "song": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                        }
+                    }
+                },
+                "sourcedomain": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                        }
+                    }
+                },
+                "targetdomain": {
+                    "type": "text",
+                    "fields": {
+                        "keyword": {
+                            "type": "keyword",
+                            "ignore_above": 256
+                        }
+                    }
+                },
+                "year": {
+                    "type": "long"
+                }
+            }
+        },
+        "settings": {
+            "index": {
+                "routing": {
+                    "allocation": {
+                        "include": {
+                            "_tier_preference": "data_content"
+                        }
+                    }
+                },
+                "number_of_shards": "1",
+                "provided_name": "tamilsongsnew",
+                "creation_date": "1674064398081",
+                "analysis": {
+                    "filter": {
+                        "custom_stems": {
+                            "type": "stemmer_override",
+                            "rules_path": "analyze/stem.txt"
+                        },
+                        "custom_stopper": {
+                            "type": "stop",
+                            "stopwords_path": "analyze/stopwords.txt"
+                        },
+                        "custom_synonyms": {
+                            "type": "synonym",
+                            "synonyms_path": "analyze/synonym.txt"
+                        }
+                    },
+                    "analyzer": {
+                        "my_analyzer": {
+                            "filters": [
+                                "custom_stopper",
+                                "custom_stems",
+                                "custom_synonyms"
+                            ],
+                            "tokenizer": "standard"
+                        }
+                    }
+                },
+                "number_of_replicas": "1",
+                "uuid": "b2aPtwEORDC4bvdgU5KoRg",
+                "version": {
+                    "created": "8050399"
+                }
+            }
+        }
+    }
+}
