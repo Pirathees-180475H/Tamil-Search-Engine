@@ -31,8 +31,8 @@ This project was created using React and ElasticSearch
 
 2. React-app/src/components contains Three .js files 
 
-    1. HomePage.JS -> Welcome Page of the application
+    1. HomePage.Js -> Welcome Page of the application
 
-    2. searchPage-> contain UI components and search functionality handlers.
+    2. searchPage.Js-> contain UI components and search functionality handlers.
 
-    3. ParamProvider -> provides the request body for elastic search queries based on your input.
+    3. ParamProvider.Js -> provides the request body for elastic search queries based on your input.
