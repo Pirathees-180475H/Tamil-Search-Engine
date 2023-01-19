@@ -17,7 +17,6 @@ import {
   Container,
   Menu,
   ListItemText,
-  IconButton
 } from "@material-ui/core";
 import { Link } from "react-router-dom";
 import axios from 'axios';
@@ -159,7 +158,7 @@ export default function SearchPage() {
      // const response = await axios.get(`your-endpoint/${searchTerm}`);
       const param=paramProvider(searchTerm,selectedQueryTypes,selectedFields,intervalQueryOrder,intervalQueryGap);
       console.log(param)
-      const response = await axios.post(`http://localhost:9200/tamilsonglyrics/_search`,param);
+      const response = await axios.post(`http://localhost:9200/tamilsongs/_search`,param);
       setResults(response.data.hits.hits.map(hit=>hit._source))
       console.log(results)
     } catch (error) {
@@ -292,7 +291,7 @@ const handleNumberChange = (event) => {
               onClick={handleMenuFieldClick}
               className={classes.button}
             >
-              Select By.
+              Find By.
             </Button>
             <Menu
               id="nested-menu"

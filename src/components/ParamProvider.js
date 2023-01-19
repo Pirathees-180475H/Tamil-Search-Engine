@@ -26,7 +26,6 @@ export function paramProvider(queryTerm,queryTypes=[],fieldsArray=[],intervalQue
     //Match Query
     if(type==="Match"){
       // only supports first filed
-     //  let  key=`${fieldsArray[0]}.case_insensitivie_and_inflections`;
        let key=fieldsArray[0];
        console.log("Query Type-Match","field-",key)
         return {
@@ -98,41 +97,6 @@ export function paramProvider(queryTerm,queryTypes=[],fieldsArray=[],intervalQue
                 }
                 }
              }
-            }
-    }
-
-    //Interval Query
-    if(type==="Interval Query"){
-        console.log("Query Type - Interval Query")
-        //Only supports One field
-        
-        let queryTerms=queryTerm.split(" ");
-        queryTerms=queryTerms.filter(word => word !== "");
-
-        let intervals=queryTerms.map(function(term){
-            return {
-                "match":{
-                    "query":term
-                }
-            }
-        })
-        
-        return {
-            "query": {
-            "bool": {
-            "must": {
-            "intervals" : {
-            [fieldsArray[0]]: {
-            "all_of" : {
-            "ordered" : intervalQueryOrder,
-            "max_gaps": parseInt(intervalQueryGap),
-            "intervals" : intervals
-            }
-            }
-            }
-            }
-            }
-            }
             }
     }
 
