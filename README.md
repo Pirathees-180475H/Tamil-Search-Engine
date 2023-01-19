@@ -1,12 +1,11 @@
 # Tamil-Metophor Search Engine - IR Project
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was created using React and ElasticSearch
 
-## Available Scripts
+## Steps to run the application
+### `1.Start the React application, Using npm install & npm start`
 
-In the project directory, you can run:
-
-### `npm start`
+### `Install Elastic search and do following steps `
 
 Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
